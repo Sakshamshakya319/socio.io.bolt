@@ -178,12 +178,12 @@
     
     <div class="form-group">
       <label for="apiUrl">Backend API URL</label>
-      <input type="url" id="apiUrl" placeholder="https://your-backend-url.onrender.com">
-      <p class="help-text">Enter the URL of your Render-hosted backend server</p>
+      <input type="url" id="apiUrl" placeholder="https://socio-io-bolt.onrender.com/" readonly>
+      <p class="help-text">Backend URL is configured in the extension settings</p>
     </div>
     
     <div id="connectionStatus" class="connection-status">
-      Please enter your backend API URL and click Test Connection
+      Testing connection to backend server...
     </div>
     
     <div class="button-group">
@@ -192,6 +192,6 @@
       <button id="closeSetup" class="button">Close Setup</button>
     </div>
   </div>
-  <script src="setup.js"></script>
+  <script src="setup.js" type="module"></script>
 </body>
 </html>
