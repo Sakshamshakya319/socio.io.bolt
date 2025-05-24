@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socio.io Content Filter Setup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3B82F6;
+      --primary-dark: #2563EB;
+      --secondary: #64748B;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --text-primary: #1F2937;
+      --text-secondary: #4B5563;
+      --background: #FFFFFF;
+      --border: #E5E7EB;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #F3F4F6;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .container {
+      background-color: var(--background);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 600px;
+      padding: 32px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    
+    header img {
+      width: 64px;
+      height: 64px;
+    }
+    
+    header h1 {
+      font-size: 24px;
+      margin: 16px 0 8px;
+      color: var(--primary);
+    }
+    
+    header p {
+      color: var(--text-secondary);
+      margin: 0;
+      font-size: 16px;
+    }
+    
+    .form-group {
+      margin-bottom: 24px;
+    }
+    
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    
+    input[type="text"], input[type="url"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 16px;
+      transition: border-color 0.2s;
+    }
+    
+    input[type="text"]:focus, input[type="url"]:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+    
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 32px;
+    }
+    
+    .button {
+      padding: 10px 16px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .button:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .button.secondary {
+      background-color: #F3F4F6;
+      color: var(--text-primary);
+    }
+    
+    .button.secondary:hover {
+      background-color: #E5E7EB;
+    }
+    
+    .connection-status {
+      margin-top: 24px;
+      padding: 16px;
+      border-radius: 4px;
+      text-align: center;
+    }
+    
+    .connected {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+    
+    .connecting {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+    
+    .error {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+    }
+    
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(0, 0, 0, 0.1);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .help-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    
+    #closeSetup {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="icons/icon128.png" alt="Socio.io Logo">
+      <h1>Socio.io Content Filter Setup</h1>
+      <p>Connect to your content filtering backend to get started</p>
+    </header>
+    
+    <div class="form-group">
+      <label for="apiUrl">Backend API URL</label>
+      <input type="url" id="apiUrl" placeholder="https://your-backend-url.onrender.com">
+      <p class="help-text">Enter the URL of your Render-hosted backend server</p>
+    </div>
+    
+    <div id="connectionStatus" class="connection-status">
+      Please enter your backend API URL and click Test Connection
+    </div>
+    
+    <div class="button-group">
+      <button id="testConnection" class="button">Test Connection</button>
+      <button id="saveSettings" class="button" disabled>Save & Continue</button>
+      <button id="closeSetup" class="button">Close Setup</button>
+    </div>
+  </div>
+  <script src="setup.js"></script>
+</body>
+</html>

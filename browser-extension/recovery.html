@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socio.io Content Recovery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3B82F6;
+      --primary-dark: #2563EB;
+      --secondary: #64748B;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --text-primary: #1F2937;
+      --text-secondary: #4B5563;
+      --background: #FFFFFF;
+      --border: #E5E7EB;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #F3F4F6;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+    }
+    
+    .container {
+      background-color: var(--background);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 800px;
+      padding: 32px;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+    }
+    
+    .header-left img {
+      width: 48px;
+      height: 48px;
+      margin-right: 16px;
+    }
+    
+    header h1 {
+      font-size: 24px;
+      margin: 0;
+      color: var(--primary);
+    }
+    
+    .domain-info {
+      background-color: #EFF6FF;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .domain-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    
+    .domain-stats {
+      display: flex;
+      gap: 24px;
+    }
+    
+    .domain-stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .domain-stat-count {
+      font-weight: 600;
+    }
+    
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    
+    .tab {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    
+    .tab:hover {
+      color: var(--primary);
+    }
+    
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    
+    .content-panel {
+      display: none;
+    }
+    
+    .content-panel.active {
+      display: block;
+    }
+    
+    .recovery-list {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .recovery-item {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .recovery-item:last-child {
+      border-bottom: none;
+    }
+    
+    .recovery-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .timestamp {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .recovery-content {
+      background-color: #F9FAFB;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      word-break: break-word;
+    }
+    
+    .image-preview {
+      max-width: 200px;
+      max-height: 150px;
+      object-fit: contain;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    
+    .button {
+      padding: 8px 12px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .button:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .button.secondary {
+      background-color: #F3F4F6;
+      color: var(--text-primary);
+    }
+    
+    .button.secondary:hover {
+      background-color: #E5E7EB;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 32px;
+      color: var(--text-secondary);
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .badge.recovered {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+    
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-left">
+        <img src="icons/icon48.png" alt="Socio.io Logo">
+        <h1>Content Recovery</h1>
+      </div>
+      <button id="recoverAll" class="button">Recover All Content</button>
+    </header>
+    
+    <div class="domain-info">
+      <div id="domainName" class="domain-name">example.com</div>
+      <div class="domain-stats">
+        <div class="domain-stat">
+          <span class="domain-stat-count" id="textCount">0</span>
+          <span>Filtered Texts</span>
+        </div>
+        <div class="domain-stat">
+          <span class="domain-stat-count" id="imagesCount">0</span>
+          <span>Filtered Images</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tabs">
+      <div class="tab active" data-tab="text">Text Content</div>
+      <div class="tab" data-tab="images">Images</div>
+    </div>
+    
+    <div id="textPanel" class="content-panel active">
+      <div id="textRecovery" class="recovery-list">
+        <div class="empty-state">No filtered text content found</div>
+      </div>
+    </div>
+    
+    <div id="imagesPanel" class="content-panel">
+      <div id="imagesRecovery" class="recovery-list">
+        <div class="empty-state">No filtered images found</div>
+      </div>
+    </div>
+    
+    <div class="actions">
+      <button id="backButton" class="button secondary">Back to Page</button>
+      <button id="clearDomainHistory" class="button secondary">Clear Domain History</button>
+    </div>
+  </div>
+  <script src="recovery.js"></script>
+</body>
+</html>

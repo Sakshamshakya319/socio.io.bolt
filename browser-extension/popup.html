@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socio.io Content Filter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3B82F6;
+      --primary-dark: #2563EB;
+      --secondary: #64748B;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --text-primary: #1F2937;
+      --text-secondary: #4B5563;
+      --background: #FFFFFF;
+      --border: #E5E7EB;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      width: 320px;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--text-primary);
+    }
+    
+    .container {
+      padding: 16px;
+    }
+    
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo h1 {
+      font-size: 16px;
+      margin: 0;
+      margin-left: 8px;
+      color: var(--primary);
+    }
+    
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 24px;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--secondary);
+      transition: .3s;
+      border-radius: 24px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(16px);
+    }
+    
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 12px;
+      background-color: #F3F4F6;
+      border-radius: 8px;
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-number {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .settings-section {
+      margin-bottom: 16px;
+    }
+    
+    .settings-section h2 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+    }
+    
+    .setting-label {
+      font-size: 14px;
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .button {
+      padding: 8px 16px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .button:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .button.secondary {
+      background-color: #F3F4F6;
+      color: var(--text-primary);
+    }
+    
+    .button.secondary:hover {
+      background-color: #E5E7EB;
+    }
+    
+    .connection-status {
+      font-size: 12px;
+      padding: 8px;
+      margin-top: 16px;
+      text-align: center;
+      border-radius: 4px;
+    }
+    
+    .connected {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+    
+    .disconnected {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+    }
+    
+    .footer {
+      font-size: 12px;
+      text-align: center;
+      padding-top: 8px;
+      color: var(--text-secondary);
+      border-top: 1px solid var(--border);
+      margin-top: 16px;
+    }
+    
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <img src="icons/icon48.png" alt="Logo" width="24" height="24">
+        <h1>Socio.io Content Filter</h1>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="enableExtension" checked>
+        <span class="slider"></span>
+      </label>
+    </header>
+    
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-number" id="textFiltered">0</div>
+        <div class="stat-label">Texts Filtered</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="imagesFiltered">0</div>
+        <div class="stat-label">Images Filtered</div>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <h2>Filtering Options</h2>
+      <div class="setting-item">
+        <div class="setting-label">Filter Text Content</div>
+        <label class="switch">
+          <input type="checkbox" id="filterText" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="setting-item">
+        <div class="setting-label">Filter Image Content</div>
+        <label class="switch">
+          <input type="checkbox" id="filterImages" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="buttons">
+      <button id="historyBtn" class="button">History</button>
+      <button id="recoverBtn" class="button secondary">Recover Content</button>
+      <button id="settingsBtn" class="button secondary">Settings</button>
+    </div>
+    
+    <div id="connectionStatus" class="connection-status connected">
+      Connected to Filtering Service
+    </div>
+    
+    <div class="footer">
+      <p>Socio.io Content Filter v1.0.0 | <a href="#" id="setupLink">Setup</a></p>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

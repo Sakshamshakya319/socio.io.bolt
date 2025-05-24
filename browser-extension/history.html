@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socio.io Content Filter History</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3B82F6;
+      --primary-dark: #2563EB;
+      --secondary: #64748B;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --text-primary: #1F2937;
+      --text-secondary: #4B5563;
+      --background: #FFFFFF;
+      --border: #E5E7EB;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #F3F4F6;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+    }
+    
+    .container {
+      background-color: var(--background);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 900px;
+      padding: 32px;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+    }
+    
+    .header-left img {
+      width: 48px;
+      height: 48px;
+      margin-right: 16px;
+    }
+    
+    header h1 {
+      font-size: 24px;
+      margin: 0;
+      color: var(--primary);
+    }
+    
+    .section {
+      margin-bottom: 32px;
+    }
+    
+    .section h2 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .domain-badge {
+      display: inline-block;
+      background-color: #EFF6FF;
+      color: var(--primary);
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-right: 8px;
+    }
+    
+    .domain-selector {
+      margin-bottom: 24px;
+    }
+    
+    .domain-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    
+    .domain-item {
+      background-color: #F3F4F6;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .domain-item:hover {
+      background-color: #E5E7EB;
+    }
+    
+    .domain-item.active {
+      background-color: #EFF6FF;
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    
+    .tab {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    
+    .tab:hover {
+      color: var(--primary);
+    }
+    
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    
+    .content-panel {
+      display: none;
+    }
+    
+    .content-panel.active {
+      display: block;
+    }
+    
+    .history-list {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .history-item {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .history-item:last-child {
+      border-bottom: none;
+    }
+    
+    .history-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .timestamp {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .history-content {
+      background-color: #F9FAFB;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      word-break: break-word;
+    }
+    
+    .image-preview {
+      max-width: 200px;
+      max-height: 150px;
+      object-fit: contain;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    
+    .button {
+      padding: 8px 12px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .button:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .button.secondary {
+      background-color: #F3F4F6;
+      color: var(--text-primary);
+    }
+    
+    .button.secondary:hover {
+      background-color: #E5E7EB;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 32px;
+      color: var(--text-secondary);
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .badge.recovered {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-left">
+        <img src="icons/icon48.png" alt="Socio.io Logo">
+        <h1>Content Filtering History</h1>
+      </div>
+      <button id="clearAllHistory" class="button secondary">Clear All History</button>
+    </header>
+    
+    <div class="domain-selector">
+      <h2>Select Domain</h2>
+      <div id="domainList" class="domain-list">
+        <!-- Domains will be populated here -->
+        <div class="domain-item active">All Domains</div>
+      </div>
+    </div>
+    
+    <div class="tabs">
+      <div class="tab active" data-tab="text">Text Content (0)</div>
+      <div class="tab" data-tab="images">Images (0)</div>
+    </div>
+    
+    <div id="textPanel" class="content-panel active">
+      <div id="textHistory" class="history-list">
+        <div class="empty-state">No filtered text content found</div>
+      </div>
+    </div>
+    
+    <div id="imagesPanel" class="content-panel">
+      <div id="imagesHistory" class="history-list">
+        <div class="empty-state">No filtered images found</div>
+      </div>
+    </div>
+  </div>
+  <script src="history.js"></script>
+</body>
+</html>

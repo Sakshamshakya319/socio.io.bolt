@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socio.io Content Filter Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3B82F6;
+      --primary-dark: #2563EB;
+      --secondary: #64748B;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --text-primary: #1F2937;
+      --text-secondary: #4B5563;
+      --background: #FFFFFF;
+      --border: #E5E7EB;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #F3F4F6;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+    }
+    
+    .container {
+      background-color: var(--background);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 800px;
+      padding: 32px;
+    }
+    
+    header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+    
+    header img {
+      width: 48px;
+      height: 48px;
+      margin-right: 16px;
+    }
+    
+    header h1 {
+      font-size: 24px;
+      margin: 0;
+      color: var(--primary);
+    }
+    
+    .section {
+      margin-bottom: 32px;
+    }
+    
+    .section h2 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .setting-item:last-child {
+      border-bottom: none;
+    }
+    
+    .setting-label {
+      flex: 1;
+    }
+    
+    .setting-label h3 {
+      font-size: 16px;
+      margin: 0 0 4px 0;
+    }
+    
+    .setting-label p {
+      font-size: 14px;
+      margin: 0;
+      color: var(--text-secondary);
+    }
+    
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 24px;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--secondary);
+      transition: .3s;
+      border-radius: 24px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    
+    input[type="text"], input[type="url"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    
+    input[type="text"]:focus, input[type="url"]:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+    
+    .button-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      margin-top: 32px;
+    }
+    
+    .button {
+      padding: 10px 16px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .button:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .button.secondary {
+      background-color: #F3F4F6;
+      color: var(--text-primary);
+    }
+    
+    .button.secondary:hover {
+      background-color: #E5E7EB;
+    }
+    
+    .button.danger {
+      background-color: var(--error);
+    }
+    
+    .button.danger:hover {
+      background-color: #DC2626;
+    }
+    
+    .connection-status {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .connected {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+    
+    .disconnected {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+    }
+    
+    .help-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="icons/icon48.png" alt="Socio.io Logo">
+      <h1>Socio.io Content Filter Settings</h1>
+    </header>
+    
+    <div class="section">
+      <h2>General Settings</h2>
+      
+      <div class="setting-item">
+        <div class="setting-label">
+          <h3>Enable Extension</h3>
+          <p>Turn on/off all content filtering</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="enableExtension" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-label">
+          <h3>Filter Text Content</h3>
+          <p>Detect and filter explicit text content</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="filterText" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-label">
+          <h3>Filter Image Content</h3>
+          <p>Detect and blur explicit images</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="filterImages" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>Backend Connection</h2>
+      
+      <div class="form-group">
+        <label for="apiUrl">Backend API URL</label>
+        <input type="url" id="apiUrl" placeholder="https://your-backend-url.onrender.com">
+        <p class="help-text">Enter the URL of your Render-hosted backend server</p>
+      </div>
+      
+      <div id="connectionStatus" class="connection-status connected">
+        Connected to Filtering Service
+      </div>
+      
+      <button id="testConnection" class="button secondary">Test Connection</button>
+    </div>
+    
+    <div class="section">
+      <h2>Data Management</h2>
+      
+      <div class="setting-item">
+        <div class="setting-label">
+          <h3>Clear History</h3>
+          <p>Delete all saved filtering history</p>
+        </div>
+        <button id="clearHistory" class="button danger">Clear</button>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-label">
+          <h3>Reset Statistics</h3>
+          <p>Reset all filtering statistics to zero</p>
+        </div>
+        <button id="resetStats" class="button danger">Reset</button>
+      </div>
+    </div>
+    
+    <div class="button-group">
+      <button id="resetAll" class="button secondary">Reset All Settings</button>
+      <button id="saveSettings" class="button">Save Settings</button>
+    </div>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>
