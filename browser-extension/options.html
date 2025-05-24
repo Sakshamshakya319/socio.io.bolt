@@ -165,10 +165,20 @@
       transition: border-color 0.2s;
     }
     
-    input[type="text"]:focus, input[type="url"]:focus {
+    input[type="text"]:focus, input[type="url"]:focus, select:focus {
       border-color: var(--primary);
       outline: none;
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+    
+    .select-input {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 14px;
+      background-color: white;
+      min-width: 150px;
+      cursor: pointer;
     }
     
     .button-group {
@@ -276,6 +286,20 @@
           <input type="checkbox" id="filterImages" checked>
           <span class="slider"></span>
         </label>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-label">
+          <h3>Image Filtering Method</h3>
+          <p>Choose which AI service to use for image filtering</p>
+        </div>
+        <div>
+          <select id="imageFilterMethod" class="select-input">
+            <option value="auto">Auto (Default)</option>
+            <option value="deepai">DeepAI</option>
+            <option value="vertex">Google Vertex AI</option>
+          </select>
+        </div>
       </div>
     </div>
     

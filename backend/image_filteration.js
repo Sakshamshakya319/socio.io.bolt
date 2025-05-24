@@ -1,22 +1,42 @@
-// Image content filtering using Google Vertex AI
+// Image content filtering using Google Vertex AI and DeepAI
 const { PredictionServiceClient } = require('@google-cloud/aiplatform');
 const { google } = require('@google-cloud/aiplatform/build/protos/protos');
+const deepai = require('deepai');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
+// Set DeepAI API key
+deepai.setApiKey(process.env.DEEPAI_API_KEY || '');
 
 /**
- * Filter image content using Vertex AI Vision API
+ * Filter image content using available APIs
  * @param {Buffer} imageBuffer - The image buffer to analyze
+ * @param {string} method - The method to use ('vertex', 'deepai', or 'auto')
  * @returns {Object} - Analysis results and filtering decision
  */
-async function filterImage(imageBuffer) {
+async function filterImage(imageBuffer, method = 'auto') {
   try {
-    const base64Image = imageBuffer.toString('base64');
-    const analysisResult = await analyzeImageWithVertexAI(base64Image);
+    let analysisResult;
+    
+    // Determine which method to use
+    if (method === 'vertex' || (method === 'auto' && isVertexConfigured())) {
+      console.log('Using Google Vertex AI for image analysis');
+      const base64Image = imageBuffer.toString('base64');
+      analysisResult = await analyzeImageWithVertexAI(base64Image);
+    } else if (method === 'deepai' || method === 'auto') {
+      console.log('Using DeepAI for image analysis');
+      analysisResult = await analyzeImageWithDeepAI(imageBuffer);
+    } else {
+      throw new Error('Invalid filtering method specified');
+    }
     
     return {
       shouldFilter: analysisResult.isExplicit,
       confidence: analysisResult.confidence,
       categories: analysisResult.categories,
-      safeScore: analysisResult.safeScore
+      safeScore: analysisResult.safeScore,
+      method: analysisResult.method
     };
   } catch (error) {
     console.error("Error in image filtering:", error);
@@ -28,6 +48,18 @@ async function filterImage(imageBuffer) {
       error: error.message
     };
   }
+}
+
+/**
+ * Check if Vertex AI is properly configured
+ * @returns {boolean} - Whether Vertex AI is configured
+ */
+function isVertexConfigured() {
+  return (
+    process.env.GOOGLE_APPLICATION_CREDENTIALS &&
+    process.env.GOOGLE_CLOUD_PROJECT &&
+    process.env.VERTEX_IMAGE_FILTER_ENDPOINT_ID
+  );
 }
 
 /**
@@ -121,6 +153,70 @@ async function analyzeImageWithVertexAI(base64Image) {
         racy: 0
       },
       error: error.message
+    };
+  }
+}
+
+/**
+ * Analyze image using DeepAI's NSFW detection API
+ * @param {Buffer} imageBuffer - The image buffer to analyze
+ * @returns {Object} - Analysis results
+ */
+async function analyzeImageWithDeepAI(imageBuffer) {
+  try {
+    // Create a temporary file to send to DeepAI
+    const tempFilePath = path.join(os.tmpdir(), `image-${Date.now()}.jpg`);
+    fs.writeFileSync(tempFilePath, imageBuffer);
+    
+    // Call DeepAI API
+    const result = await deepai.callStandardApi("nsfw-detector", {
+      image: fs.createReadStream(tempFilePath),
+    });
+    
+    // Clean up the temporary file
+    fs.unlinkSync(tempFilePath);
+    
+    // Process the results
+    console.log('DeepAI result:', result);
+    
+    // Extract NSFW score
+    const nsfwScore = result.output?.nsfw_score || 0;
+    
+    // Determine if the image contains explicit content
+    // DeepAI scores range from 0 to 1, where higher values indicate more NSFW content
+    const isExplicit = nsfwScore > 0.7;
+    
+    // Calculate safe score (inverse of NSFW score)
+    const safeScore = 1 - nsfwScore;
+    
+    // Determine categories based on NSFW score
+    const categories = [];
+    if (nsfwScore > 0.7) categories.push('adult');
+    
+    return {
+      isExplicit,
+      confidence: nsfwScore,
+      categories,
+      safeScore,
+      scores: {
+        nsfw: nsfwScore
+      },
+      method: 'deepai'
+    };
+  } catch (error) {
+    console.error('Error analyzing image with DeepAI:', error);
+    
+    // If DeepAI fails, return a safe default
+    return {
+      isExplicit: false,
+      confidence: 0,
+      categories: [],
+      safeScore: 1.0,
+      scores: {
+        nsfw: 0
+      },
+      error: error.message,
+      method: 'deepai'
     };
   }
 }

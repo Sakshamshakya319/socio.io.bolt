@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socio.io Content Filter - Stats</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3B82F6;
+      --primary-dark: #2563EB;
+      --secondary: #64748B;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --text-primary: #1F2937;
+      --text-secondary: #4B5563;
+      --background: #FFFFFF;
+      --border: #E5E7EB;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #F3F4F6;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .container {
+      background-color: var(--background);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 600px;
+      padding: 32px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    
+    header h1 {
+      font-size: 24px;
+      margin: 16px 0 8px;
+      color: var(--primary);
+    }
+    
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 32px;
+    }
+    
+    .stat-card {
+      background-color: #F9FAFB;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      width: 45%;
+    }
+    
+    .stat-value {
+      font-size: 36px;
+      font-weight: 600;
+      color: var(--primary);
+      margin: 8px 0;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    
+    .last-updated {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+    
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+    
+    .button {
+      padding: 10px 16px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .button:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .button.danger {
+      background-color: var(--error);
+    }
+    
+    .button.danger:hover {
+      background-color: #DC2626;
+    }
+    
+    .button.secondary {
+      background-color: #F3F4F6;
+      color: var(--text-primary);
+    }
+    
+    .button.secondary:hover {
+      background-color: #E5E7EB;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="icons/icon128.png" alt="Socio.io Logo" width="64" height="64">
+      <h1>Content Filter Statistics</h1>
+    </header>
+    
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-value" id="textFiltered">0</div>
+        <div class="stat-label">Texts Filtered</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="imagesFiltered">0</div>
+        <div class="stat-label">Images Filtered</div>
+      </div>
+    </div>
+    
+    <div class="last-updated" id="lastUpdated">
+      Last updated: Never
+    </div>
+    
+    <div class="button-group">
+      <button id="refreshStats" class="button">Refresh Stats</button>
+      <button id="resetStats" class="button danger">Reset Stats</button>
+      <button id="closeStats" class="button secondary">Close</button>
+    </div>
+  </div>
+  
+  <script src="stats-page.js" type="module"></script>
+</body>
+</html>

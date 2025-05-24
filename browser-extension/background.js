@@ -1,4 +1,5 @@
 // Background script for content filter extension
+import { initStats, incrementStat } from './stats.js';
 
 // Default configuration
 const DEFAULT_CONFIG = {
@@ -7,30 +8,24 @@ const DEFAULT_CONFIG = {
   enabled: true,
   filterText: true,
   filterImages: true,
-  stats: {
-    textFiltered: 0,
-    imagesFiltered: 0
-  },
   history: {} // Will store by domain
 };
 
 // Initialize storage with default values
 chrome.runtime.onInstalled.addListener(() => {
+  // Initialize config
   chrome.storage.local.get(['config'], (result) => {
     if (!result.config) {
       // Set default config if none exists
-      chrome.storage.local.set({ config: DEFAULT_CONFIG });
-    } else {
-      // Make sure stats object exists and has correct structure
-      const config = result.config;
-      if (!config.stats) {
-        config.stats = {
-          textFiltered: 0,
-          imagesFiltered: 0
-        };
-        chrome.storage.local.set({ config });
-      }
+      chrome.storage.local.set({ config: DEFAULT_CONFIG }, () => {
+        console.log('Default config initialized');
+      });
     }
+  });
+  
+  // Initialize stats separately
+  initStats().then(stats => {
+    console.log('Stats initialized on install:', stats);
   });
   
   // Open options page on install for setup
@@ -39,34 +34,10 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Function to update statistics
 function updateStats(type) {
-  chrome.storage.local.get(['config'], (result) => {
-    const config = result.config || {};
-    
-    // Make sure stats object exists
-    if (!config.stats) {
-      config.stats = {
-        textFiltered: 0,
-        imagesFiltered: 0
-      };
-    }
-    
-    // Increment the appropriate counter
-    if (type === 'text') {
-      config.stats.textFiltered = (config.stats.textFiltered || 0) + 1;
-      console.log('Text filtered count updated to:', config.stats.textFiltered);
-    } else if (type === 'image') {
-      config.stats.imagesFiltered = (config.stats.imagesFiltered || 0) + 1;
-      console.log('Images filtered count updated to:', config.stats.imagesFiltered);
-    }
-    
-    // Save the updated config
-    chrome.storage.local.set({ config }, () => {
-      if (chrome.runtime.lastError) {
-        console.error('Error saving stats:', chrome.runtime.lastError);
-      } else {
-        console.log('Stats saved successfully');
-      }
-    });
+  incrementStat(type).then(stats => {
+    console.log(`Stats updated for ${type}:`, stats);
+  }).catch(error => {
+    console.error('Error updating stats:', error);
   });
 }
 

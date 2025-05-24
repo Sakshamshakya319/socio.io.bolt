@@ -1,4 +1,5 @@
 // Popup script for the extension
+import { getStats } from './stats.js';
 
 document.addEventListener('DOMContentLoaded', function() {
   // Load configuration and update UI
@@ -13,8 +14,14 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('settingsBtn').addEventListener('click', openSettings);
   document.getElementById('setupLink').addEventListener('click', openSetup);
   
+  // Add click event for stats section to open detailed stats
+  document.querySelector('.stats').addEventListener('click', openStats);
+  
   // Check connection to the backend API
   checkBackendConnection();
+  
+  // Load stats separately
+  loadStats();
 });
 
 // Load extension configuration
@@ -27,21 +34,22 @@ function loadConfig() {
     document.getElementById('filterText').checked = config.filterText !== false;
     document.getElementById('filterImages').checked = config.filterImages !== false;
     
-    // Update statistics
-    if (config.stats) {
-      document.getElementById('textFiltered').textContent = config.stats.textFiltered || 0;
-      document.getElementById('imagesFiltered').textContent = config.stats.imagesFiltered || 0;
-    } else {
-      // Initialize stats if they don't exist
-      config.stats = {
-        textFiltered: 0,
-        imagesFiltered: 0
-      };
-      chrome.storage.local.set({ config });
-    }
-    
     // Update connection status
     updateConnectionStatus(config.isConfigured);
+  });
+}
+
+// Load stats
+function loadStats() {
+  getStats().then(stats => {
+    console.log('Stats loaded in popup:', stats);
+    document.getElementById('textFiltered').textContent = stats.textFiltered || 0;
+    document.getElementById('imagesFiltered').textContent = stats.imagesFiltered || 0;
+  }).catch(error => {
+    console.error('Error loading stats:', error);
+    // Show default values if there's an error
+    document.getElementById('textFiltered').textContent = '0';
+    document.getElementById('imagesFiltered').textContent = '0';
   });
 }
 
@@ -175,4 +183,9 @@ function openSettings() {
 // Open setup page
 function openSetup() {
   chrome.tabs.create({ url: 'setup.html' });
+}
+
+// Open stats page
+function openStats() {
+  chrome.tabs.create({ url: 'stats.html' });
 }

@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('enableExtension').addEventListener('change', updateToggle);
   document.getElementById('filterText').addEventListener('change', updateToggle);
   document.getElementById('filterImages').addEventListener('change', updateToggle);
+  document.getElementById('imageFilterMethod').addEventListener('change', updateToggle);
   document.getElementById('testConnection').addEventListener('click', testConnection);
   document.getElementById('clearHistory').addEventListener('click', clearHistory);
   document.getElementById('resetStats').addEventListener('click', resetStats);
@@ -24,6 +25,14 @@ function loadConfig() {
     document.getElementById('enableExtension').checked = config.enabled !== false;
     document.getElementById('filterText').checked = config.filterText !== false;
     document.getElementById('filterImages').checked = config.filterImages !== false;
+    
+    // Set image filtering method
+    const imageFilterMethod = document.getElementById('imageFilterMethod');
+    if (config.imageFilterMethod) {
+      imageFilterMethod.value = config.imageFilterMethod;
+    } else {
+      imageFilterMethod.value = 'auto'; // Default to auto
+    }
     
     // Fill in API URL if configured
     if (config.apiUrl) {
@@ -109,6 +118,7 @@ function resetAll() {
       enabled: true,
       filterText: true,
       filterImages: true,
+      imageFilterMethod: 'deepai', // Default to DeepAI
       stats: {
         textFiltered: 0,
         imagesFiltered: 0
@@ -140,6 +150,7 @@ function saveSettings() {
     config.enabled = document.getElementById('enableExtension').checked;
     config.filterText = document.getElementById('filterText').checked;
     config.filterImages = document.getElementById('filterImages').checked;
+    config.imageFilterMethod = document.getElementById('imageFilterMethod').value;
     
     // If API URL changed, we need to test the connection
     if (config.apiUrl !== apiUrl) {
@@ -186,7 +197,8 @@ function saveConfigAndNotify(config) {
             enabled: config.enabled,
             filterText: config.filterText,
             filterImages: config.filterImages,
-            apiUrl: config.apiUrl
+            apiUrl: config.apiUrl,
+            imageFilterMethod: config.imageFilterMethod
           }
         });
       });
