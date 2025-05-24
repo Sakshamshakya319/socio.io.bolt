@@ -31,6 +31,13 @@ function loadConfig() {
     if (config.stats) {
       document.getElementById('textFiltered').textContent = config.stats.textFiltered || 0;
       document.getElementById('imagesFiltered').textContent = config.stats.imagesFiltered || 0;
+    } else {
+      // Initialize stats if they don't exist
+      config.stats = {
+        textFiltered: 0,
+        imagesFiltered: 0
+      };
+      chrome.storage.local.set({ config });
     }
     
     // Update connection status

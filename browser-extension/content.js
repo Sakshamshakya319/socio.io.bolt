@@ -426,17 +426,31 @@ function reportFilteredContent(type, original, filtered) {
   const url = new URL(window.location.href);
   const domain = url.hostname;
   
+  // Update stats in the background script
   chrome.runtime.sendMessage({
     action: 'updateStats',
     type: type
+  }, response => {
+    if (chrome.runtime.lastError) {
+      console.error('Error updating stats:', chrome.runtime.lastError);
+    } else if (response && response.success) {
+      console.log(`${type} stats updated successfully`);
+    }
   });
   
+  // Add to history in the background script
   chrome.runtime.sendMessage({
     action: 'addToHistory',
     domain: domain,
     type: type,
     content: original,
     replacement: filtered
+  }, response => {
+    if (chrome.runtime.lastError) {
+      console.error('Error adding to history:', chrome.runtime.lastError);
+    } else if (response && response.success) {
+      console.log(`${type} content added to history for ${domain}`);
+    }
   });
 }
 

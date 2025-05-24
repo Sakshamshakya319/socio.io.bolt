@@ -2,7 +2,7 @@
 
 // Default configuration
 const DEFAULT_CONFIG = {
-  apiUrl: '',
+  apiUrl: 'https://socio-io-bolt.onrender.com',
   isConfigured: false,
   enabled: true,
   filterText: true,
@@ -18,7 +18,18 @@ const DEFAULT_CONFIG = {
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.get(['config'], (result) => {
     if (!result.config) {
+      // Set default config if none exists
       chrome.storage.local.set({ config: DEFAULT_CONFIG });
+    } else {
+      // Make sure stats object exists and has correct structure
+      const config = result.config;
+      if (!config.stats) {
+        config.stats = {
+          textFiltered: 0,
+          imagesFiltered: 0
+        };
+        chrome.storage.local.set({ config });
+      }
     }
   });
   
@@ -29,20 +40,45 @@ chrome.runtime.onInstalled.addListener(() => {
 // Function to update statistics
 function updateStats(type) {
   chrome.storage.local.get(['config'], (result) => {
-    const config = result.config;
-    if (type === 'text') {
-      config.stats.textFiltered++;
-    } else if (type === 'image') {
-      config.stats.imagesFiltered++;
+    const config = result.config || {};
+    
+    // Make sure stats object exists
+    if (!config.stats) {
+      config.stats = {
+        textFiltered: 0,
+        imagesFiltered: 0
+      };
     }
-    chrome.storage.local.set({ config });
+    
+    // Increment the appropriate counter
+    if (type === 'text') {
+      config.stats.textFiltered = (config.stats.textFiltered || 0) + 1;
+      console.log('Text filtered count updated to:', config.stats.textFiltered);
+    } else if (type === 'image') {
+      config.stats.imagesFiltered = (config.stats.imagesFiltered || 0) + 1;
+      console.log('Images filtered count updated to:', config.stats.imagesFiltered);
+    }
+    
+    // Save the updated config
+    chrome.storage.local.set({ config }, () => {
+      if (chrome.runtime.lastError) {
+        console.error('Error saving stats:', chrome.runtime.lastError);
+      } else {
+        console.log('Stats saved successfully');
+      }
+    });
   });
 }
 
 // Function to add to history
 function addToHistory(domain, type, content, replacement) {
   chrome.storage.local.get(['config'], (result) => {
-    const config = result.config;
+    const config = result.config || {};
+    
+    // Make sure history object exists
+    if (!config.history) {
+      config.history = {};
+    }
     
     // Initialize domain in history if it doesn't exist
     if (!config.history[domain]) {
@@ -58,11 +94,20 @@ function addToHistory(domain, type, content, replacement) {
     
     if (type === 'text') {
       config.history[domain].text.push(entry);
+      console.log(`Added text entry to history for ${domain}`);
     } else if (type === 'image') {
       config.history[domain].images.push(entry);
+      console.log(`Added image entry to history for ${domain}`);
     }
     
-    chrome.storage.local.set({ config });
+    // Save the updated config
+    chrome.storage.local.set({ config }, () => {
+      if (chrome.runtime.lastError) {
+        console.error('Error saving history:', chrome.runtime.lastError);
+      } else {
+        console.log('History saved successfully');
+      }
+    });
   });
 }
 
@@ -78,11 +123,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'updateStats') {
     updateStats(request.type);
     sendResponse({ success: true });
+    return true; // Required for async response
   }
   
   if (request.action === 'addToHistory') {
     addToHistory(request.domain, request.type, request.content, request.replacement);
     sendResponse({ success: true });
+    return true; // Required for async response
   }
   
   if (request.action === 'getHistory') {
