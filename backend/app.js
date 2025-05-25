@@ -4,6 +4,7 @@ const router = express.Router();
 const textFilteration = require('./text_content_filteration');
 const imageFilteration = require('./image_filteration');
 const multer = require('multer');
+const sharp = require('sharp'); // Required for image blurring
 
 // Configure multer for in-memory storage
 const storage = multer.memoryStorage();
@@ -65,36 +66,38 @@ router.post('/filter/text', async (req, res) => {
 // Image content filtering endpoint
 router.post('/filter/image', upload.single('image'), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: "No image provided" });
-    }
-    
-    // Get the filtering method from the request (default to 'auto')
+    if (!req.file) return res.status(400).json({ error: "No image provided" });
     const method = req.body.method || 'auto';
-    
+
     // Validate the method
     if (!['auto', 'vertex', 'deepai'].includes(method)) {
       return res.status(400).json({ 
         error: "Invalid method. Use 'auto', 'vertex', or 'deepai'." 
       });
     }
-    
+
     // Check if the requested method is available
     if (method === 'vertex' && !process.env.GOOGLE_APPLICATION_CREDENTIALS) {
       return res.status(400).json({ 
         error: "Google Vertex AI is not configured. Use 'deepai' or 'auto' instead." 
       });
     }
-    
     if (method === 'deepai' && !process.env.DEEPAI_API_KEY) {
       return res.status(400).json({ 
         error: "DeepAI is not configured. Use 'vertex' or 'auto' instead." 
       });
     }
-    
-    // Process the image with the specified method
+
     const result = await imageFilteration.filterImage(req.file.buffer, method);
-    res.json(result);
+
+    // If explicit, return blurred image, else return original image
+    if (result.isExplicit) {
+      res.set('Content-Type', req.file.mimetype || 'image/jpeg');
+      return res.send(result.filteredImage);
+    } else {
+      res.set('Content-Type', req.file.mimetype || 'image/jpeg');
+      return res.send(req.file.buffer);
+    }
   } catch (error) {
     console.error('Image filtering error:', error);
     res.status(500).json({ error: error.message });
