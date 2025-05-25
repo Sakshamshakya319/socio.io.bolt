@@ -1,31 +1,25 @@
 // Background script for content filter extension
-import { initStats, incrementStat } from './stats.js';
 
 // Default configuration
 const DEFAULT_CONFIG = {
-  apiUrl: 'https://socio-io-bolt.onrender.com',
+  apiUrl: '',
   isConfigured: false,
   enabled: true,
   filterText: true,
   filterImages: true,
+  stats: {
+    textFiltered: 0,
+    imagesFiltered: 0
+  },
   history: {} // Will store by domain
 };
 
 // Initialize storage with default values
 chrome.runtime.onInstalled.addListener(() => {
-  // Initialize config
   chrome.storage.local.get(['config'], (result) => {
     if (!result.config) {
-      // Set default config if none exists
-      chrome.storage.local.set({ config: DEFAULT_CONFIG }, () => {
-        console.log('Default config initialized');
-      });
+      chrome.storage.local.set({ config: DEFAULT_CONFIG });
     }
-  });
-  
-  // Initialize stats separately
-  initStats().then(stats => {
-    console.log('Stats initialized on install:', stats);
   });
   
   // Open options page on install for setup
@@ -34,22 +28,21 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Function to update statistics
 function updateStats(type) {
-  incrementStat(type).then(stats => {
-    console.log(`Stats updated for ${type}:`, stats);
-  }).catch(error => {
-    console.error('Error updating stats:', error);
+  chrome.storage.local.get(['config'], (result) => {
+    const config = result.config;
+    if (type === 'text') {
+      config.stats.textFiltered++;
+    } else if (type === 'image') {
+      config.stats.imagesFiltered++;
+    }
+    chrome.storage.local.set({ config });
   });
 }
 
 // Function to add to history
 function addToHistory(domain, type, content, replacement) {
   chrome.storage.local.get(['config'], (result) => {
-    const config = result.config || {};
-    
-    // Make sure history object exists
-    if (!config.history) {
-      config.history = {};
-    }
+    const config = result.config;
     
     // Initialize domain in history if it doesn't exist
     if (!config.history[domain]) {
@@ -65,20 +58,11 @@ function addToHistory(domain, type, content, replacement) {
     
     if (type === 'text') {
       config.history[domain].text.push(entry);
-      console.log(`Added text entry to history for ${domain}`);
     } else if (type === 'image') {
       config.history[domain].images.push(entry);
-      console.log(`Added image entry to history for ${domain}`);
     }
     
-    // Save the updated config
-    chrome.storage.local.set({ config }, () => {
-      if (chrome.runtime.lastError) {
-        console.error('Error saving history:', chrome.runtime.lastError);
-      } else {
-        console.log('History saved successfully');
-      }
-    });
+    chrome.storage.local.set({ config });
   });
 }
 
@@ -94,13 +78,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'updateStats') {
     updateStats(request.type);
     sendResponse({ success: true });
-    return true; // Required for async response
   }
   
   if (request.action === 'addToHistory') {
     addToHistory(request.domain, request.type, request.content, request.replacement);
     sendResponse({ success: true });
-    return true; // Required for async response
   }
   
   if (request.action === 'getHistory') {

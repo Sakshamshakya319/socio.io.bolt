@@ -280,124 +280,24 @@ function checkImageWithBackend(img) {
       const formData = new FormData();
       formData.append('image', blob);
       
-      // Use the configured image filtering method or default to DeepAI
-      const filterMethod = config.imageFilterMethod || 'deepai';
-      formData.append('method', filterMethod);
-      
-      console.log(`Using ${filterMethod} method for image filtering`);
-      
-      // Show loading indicator
-      const loadingIndicator = createLoadingIndicator(img);
-      
       fetch(`${config.apiUrl}/filter/image`, {
         method: 'POST',
         body: formData
       })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Server responded with status: ${response.status}`);
-        }
-        return response.json();
-      })
+      .then(response => response.json())
       .then(data => {
-        // Remove loading indicator
-        if (loadingIndicator && loadingIndicator.parentNode) {
-          loadingIndicator.parentNode.removeChild(loadingIndicator);
-        }
-        
-        console.log('Image filter result:', data);
-        
         if (data.shouldFilter) {
           // Apply filter to the image
           applyImageFilter(img, data);
-          
-          // Report filtered content for stats
-          const originalSrc = img.src;
-          reportFilteredContent('image', originalSrc, 'filtered-image');
         }
       })
       .catch(error => {
         console.error('Error filtering image:', error);
-        
-        // Remove loading indicator on error
-        if (loadingIndicator && loadingIndicator.parentNode) {
-          loadingIndicator.parentNode.removeChild(loadingIndicator);
-        }
-        
-        // Fallback to local basic filtering if backend fails
-        if (shouldFilterImageLocally(img)) {
-          applyImageFilter(img, { 
-            shouldFilter: true, 
-            confidence: 0.8,
-            method: 'local-fallback'
-          });
-        }
       });
     }, 'image/jpeg', 0.95);
   } catch (error) {
     console.error('Error processing image for filtering:', error);
   }
-}
-
-// Create a loading indicator for image processing
-function createLoadingIndicator(img) {
-  // Skip if already has a loading indicator
-  if (img.nextElementSibling && img.nextElementSibling.classList.contains('socio-io-loading')) {
-    return img.nextElementSibling;
-  }
-  
-  const rect = img.getBoundingClientRect();
-  const indicator = document.createElement('div');
-  indicator.className = 'socio-io-loading';
-  indicator.style.position = 'absolute';
-  indicator.style.top = `${rect.top + window.scrollY}px`;
-  indicator.style.left = `${rect.left + window.scrollX}px`;
-  indicator.style.width = `${img.width}px`;
-  indicator.style.height = `${img.height}px`;
-  indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
-  indicator.style.display = 'flex';
-  indicator.style.alignItems = 'center';
-  indicator.style.justifyContent = 'center';
-  indicator.style.zIndex = '9999';
-  
-  const spinner = document.createElement('div');
-  spinner.className = 'socio-io-spinner';
-  spinner.style.width = '30px';
-  spinner.style.height = '30px';
-  spinner.style.border = '3px solid rgba(255, 255, 255, 0.3)';
-  spinner.style.borderRadius = '50%';
-  spinner.style.borderTop = '3px solid #fff';
-  spinner.style.animation = 'socio-io-spin 1s linear infinite';
-  
-  // Add keyframes for spinner animation if not already added
-  if (!document.getElementById('socio-io-spinner-style')) {
-    const style = document.createElement('style');
-    style.id = 'socio-io-spinner-style';
-    style.textContent = `
-      @keyframes socio-io-spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-  
-  indicator.appendChild(spinner);
-  document.body.appendChild(indicator);
-  
-  return indicator;
-}
-
-// Basic local image filtering check
-function shouldFilterImageLocally(img) {
-  // This is a very basic check that could be enhanced
-  // For now, we'll just check if the image has certain dimensions
-  // that might indicate it's a banner or advertisement
-  const aspectRatio = img.width / img.height;
-  
-  // Common ad banner sizes often have extreme aspect ratios
-  return (aspectRatio > 3 || aspectRatio < 0.3) && 
-         (img.width > 300 || img.height > 300);
 }
 
 // Apply filter to an explicit image
@@ -427,31 +327,15 @@ function applyImageFilter(img, data) {
   img.classList.add('socio-io-filtered');
   img.style.filter = 'blur(25px)';
   
-  // Format confidence score for display
-  const confidencePercent = Math.round((data.confidence || 0) * 100);
-  const filterMethod = data.method || 'AI';
-  
   // Create an overlay with disclaimer
   const overlay = document.createElement('div');
   overlay.className = 'socio-io-overlay';
   overlay.innerHTML = `
     <div class="socio-io-disclaimer">
       <span>This image is blurred by Socio.io Content Filter</span>
-      <div class="socio-io-filter-info">
-        <span class="socio-io-confidence">Confidence: ${confidencePercent}%</span>
-        <span class="socio-io-method">Method: ${filterMethod}</span>
-      </div>
       <button class="socio-io-view-btn">View Image</button>
     </div>
   `;
-  
-  // Style the filter info
-  const filterInfo = overlay.querySelector('.socio-io-filter-info');
-  if (filterInfo) {
-    filterInfo.style.fontSize = '12px';
-    filterInfo.style.color = '#aaa';
-    filterInfo.style.marginBottom = '8px';
-  }
   
   // Add event listener to the view button
   overlay.querySelector('.socio-io-view-btn').addEventListener('click', (event) => {
@@ -542,27 +426,18 @@ function reportFilteredContent(type, original, filtered) {
   const url = new URL(window.location.href);
   const domain = url.hostname;
   
-  // Update stats in the background script
   chrome.runtime.sendMessage({
     action: 'updateStats',
     type: type
-  }).catch(error => {
-    console.error('Error sending stats update message:', error);
   });
   
-  // Add to history in the background script
   chrome.runtime.sendMessage({
     action: 'addToHistory',
     domain: domain,
     type: type,
     content: original,
     replacement: filtered
-  }).catch(error => {
-    console.error('Error sending history update message:', error);
   });
-  
-  // Log the filtering action
-  console.log(`Content filtered - Type: ${type}, Domain: ${domain}`);
 }
 
 // Recover filtered content

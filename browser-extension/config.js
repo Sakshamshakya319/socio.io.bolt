@@ -1,7 +1,7 @@
 // Extension configuration
 const config = {
   // Backend API URL (deployed on Render)
-  apiUrl: 'https://socio-io-bolt-1.onrender.com',
+  apiUrl: 'https://socio-content-filter.onrender.com',
   
   // Version
   version: '1.0.0',
