@@ -9,9 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('testConnection').addEventListener('click', testConnection);
   document.getElementById('saveSettings').addEventListener('click', saveSettings);
   document.getElementById('closeSetup').addEventListener('click', closeSetup);
-  
-  // Automatically test connection on load
-  testConnection();
 });
 
 // Load extension configuration
@@ -20,7 +17,7 @@ function loadConfig() {
     const storedConfig = result.config || {};
     
     // Pre-fill API URL from config
-    document.getElementById('apiUrl').value = config.apiUrl;
+    document.getElementById('apiUrl').value = config.apiUrl || 'https://socio-io-iumw.onrender.com';
     
     // Update connection status
     if (storedConfig.isConfigured) {
@@ -33,7 +30,7 @@ function loadConfig() {
 
 // Test connection to the backend API
 function testConnection() {
-  const apiUrl = document.getElementById('apiUrl').value.trim() || config.apiUrl;
+  const apiUrl = document.getElementById('apiUrl').value.trim() || 'https://socio-io-iumw.onrender.com';
   
   // Show connecting status
   updateConnectionStatus('connecting', '<span class="spinner"></span> Testing connection...');
@@ -50,7 +47,9 @@ function testConnection() {
       if (data.status === 'ok') {
         updateConnectionStatus('connected', 'Connection successful! Backend is running.');
         document.getElementById('saveSettings').disabled = false;
-        saveSettings(); // Auto save on successful connection
+        
+        // Save settings automatically
+        saveSettings();
       } else {
         updateConnectionStatus('error', 'Connection failed: Invalid response from server');
       }
@@ -63,7 +62,7 @@ function testConnection() {
 
 // Save settings
 function saveSettings() {
-  const apiUrl = document.getElementById('apiUrl').value.trim() || config.apiUrl;
+  const apiUrl = document.getElementById('apiUrl').value.trim() || 'https://socio-io-iumw.onrender.com';
   
   // Update configuration
   chrome.storage.local.get(['config'], (result) => {
@@ -81,14 +80,10 @@ function saveSettings() {
       updateConnectionStatus('connected', 'Settings saved successfully!');
       document.getElementById('closeSetup').style.display = 'block';
       
-      // Auto close after 2 seconds if this is first setup
-      if (!storedConfig.firstSetupComplete) {
-        setTimeout(() => {
-          newConfig.firstSetupComplete = true;
-          chrome.storage.local.set({ config: newConfig });
-          closeSetup();
-        }, 2000);
-      }
+      // Auto close after successful save
+      setTimeout(() => {
+        closeSetup();
+      }, 1500);
     });
   });
 }

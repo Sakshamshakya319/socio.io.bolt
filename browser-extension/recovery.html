@@ -18,6 +18,37 @@
       --background: #FFFFFF;
       --border: #E5E7EB;
     }
+
+    .original-text, .filtered-text, .image-url {
+  margin: 5px 0;
+  padding: 8px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  word-break: break-word;
+}
+
+.original-text {
+  border-left: 3px solid #3B82F6;
+}
+
+.filtered-text {
+  border-left: 3px solid #EF4444;
+}
+
+.image-url {
+  border-left: 3px solid #10B981;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.image-url a {
+  color: #3B82F6;
+  text-decoration: none;
+}
+
+.image-url a:hover {
+  text-decoration: underline;
+}
     
     body {
       font-family: 'Inter', sans-serif;

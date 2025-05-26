@@ -332,7 +332,7 @@ function applyImageFilter(img, data) {
   overlay.className = 'socio-io-overlay';
   overlay.innerHTML = `
     <div class="socio-io-disclaimer">
-      <span>This image is blurred by Socio.io Content Filter</span>
+      <span>disclaimer this image is filtered by socio.io extension</span>
       <button class="socio-io-view-btn">View Image</button>
     </div>
   `;
@@ -366,8 +366,8 @@ function applyImageFilter(img, data) {
     index
   });
   
-  // Report to background
-  reportFilteredContent('image', originalSrc, 'blurred-image');
+  // Report to background with image URL
+  reportFilteredContent('image', originalSrc, originalSrc);
 }
 
 // Set up mutation observer to handle dynamic content
@@ -429,6 +429,9 @@ function reportFilteredContent(type, original, filtered) {
   chrome.runtime.sendMessage({
     action: 'updateStats',
     type: type
+  }, response => {
+    // Log response to verify message was received
+    console.log('Stats update response:', response);
   });
   
   chrome.runtime.sendMessage({
@@ -437,6 +440,9 @@ function reportFilteredContent(type, original, filtered) {
     type: type,
     content: original,
     replacement: filtered
+  }, response => {
+    // Log response to verify message was received
+    console.log('History update response:', response);
   });
 }
 

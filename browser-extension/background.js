@@ -2,7 +2,7 @@
 
 // Default configuration
 const DEFAULT_CONFIG = {
-  apiUrl: '',
+  apiUrl: 'https://socio-io-iumw.onrender.com',
   isConfigured: false,
   enabled: true,
   filterText: true,
@@ -29,13 +29,21 @@ chrome.runtime.onInstalled.addListener(() => {
 // Function to update statistics
 function updateStats(type) {
   chrome.storage.local.get(['config'], (result) => {
-    const config = result.config;
+    const config = result.config || DEFAULT_CONFIG;
+    
     if (type === 'text') {
-      config.stats.textFiltered++;
+      config.stats.textFiltered = (config.stats.textFiltered || 0) + 1;
     } else if (type === 'image') {
-      config.stats.imagesFiltered++;
+      config.stats.imagesFiltered = (config.stats.imagesFiltered || 0) + 1;
     }
-    chrome.storage.local.set({ config });
+    
+    console.log('Updating stats:', type, config.stats);
+    
+    chrome.storage.local.set({ config }, () => {
+      if (chrome.runtime.lastError) {
+        console.error('Error updating stats:', chrome.runtime.lastError);
+      }
+    });
   });
 }
 

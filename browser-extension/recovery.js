@@ -94,8 +94,14 @@ function renderTextRecovery(textItems) {
         </div>
         <span class="timestamp">${formattedDate}</span>
       </div>
-      <div class="recovery-content">${item.content}</div>
-      <div class="recovery-content">${item.replacement}</div>
+      <div class="recovery-content">
+        <strong>Original Text:</strong>
+        <div class="original-text">${item.content}</div>
+      </div>
+      <div class="recovery-content">
+        <strong>Filtered Text:</strong>
+        <div class="filtered-text">${item.replacement}</div>
+      </div>
     `;
     
     // Add recover button if not already recovered
@@ -143,6 +149,10 @@ function renderImagesRecovery(imageItems) {
           ${item.recovered ? '<span class="badge recovered">Recovered</span>' : ''}
         </div>
         <span class="timestamp">${formattedDate}</span>
+      </div>
+      <div class="recovery-content">
+        <strong>Image URL:</strong>
+        <div class="image-url"><a href="${item.content}" target="_blank">${item.content}</a></div>
       </div>
       <img src="${item.content}" class="image-preview" alt="Filtered image">
     `;

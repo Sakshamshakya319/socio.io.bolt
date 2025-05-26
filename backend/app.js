@@ -5,6 +5,12 @@ const textFilteration = require('./text_content_filteration');
 const imageFilteration = require('./image_filteration');
 const multer = require('multer');
 
+const { filterImage } = require('./image_filteration');
+
+// In your Express POST handler:
+const result = await filterImage(req.file.buffer);
+res.json(result);
+
 // Configure multer for in-memory storage
 const storage = multer.memoryStorage();
 const upload = multer({ 
