@@ -105,6 +105,7 @@
       padding: 12px;
       background-color: #F3F4F6;
       border-radius: 8px;
+      position: relative;
     }
     
     .stat-item {
@@ -120,6 +121,106 @@
     .stat-label {
       font-size: 12px;
       color: var(--text-secondary);
+    }
+    
+    .stat-controls {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      display: flex;
+      gap: 5px;
+    }
+    
+    .refresh-btn, .reset-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    
+    .refresh-btn:hover, .reset-btn:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+      color: var(--primary);
+    }
+    
+    .reset-btn:hover {
+      color: #EF4444;
+    }
+    
+    .refresh-btn svg, .reset-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .refresh-btn.loading {
+      pointer-events: none;
+    }
+    
+    .refresh-btn .spin {
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .stat-number {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .stat-number:hover {
+      color: #2563EB;
+    }
+    
+    .stat-number.updated {
+      animation: stat-updated 1s ease-in-out;
+    }
+    
+    @keyframes stat-updated {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); color: #2563EB; }
+      100% { transform: scale(1); }
+    }
+    
+    /* Toast notification */
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 4px;
+      padding: 12px;
+      position: fixed;
+      z-index: 1000;
+      left: 50%;
+      bottom: 30px;
+      transform: translateX(-50%);
+      font-size: 14px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    #toast.show {
+      visibility: visible;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+    
+    @keyframes fadein {
+      from { bottom: 0; opacity: 0; }
+      to { bottom: 30px; opacity: 1; }
+    }
+    
+    @keyframes fadeout {
+      from { bottom: 30px; opacity: 1; }
+      to { bottom: 0; opacity: 0; }
     }
     
     .settings-section {
@@ -227,6 +328,22 @@
       <div class="stat-item">
         <div class="stat-number" id="imagesFiltered">0</div>
         <div class="stat-label">Images Filtered</div>
+      </div>
+      <div class="stat-controls">
+        <button id="refreshStats" class="refresh-btn" title="Refresh Statistics">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 4v6h-6"></path>
+            <path d="M1 20v-6h6"></path>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path>
+            <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"></path>
+          </svg>
+        </button>
+        <button id="resetStats" class="reset-btn" title="Reset Statistics">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18"></path>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+        </button>
       </div>
     </div>
     

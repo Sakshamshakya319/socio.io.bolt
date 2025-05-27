@@ -1,7 +1,7 @@
 // Extension configuration
 const config = {
   // Backend API URL (deployed on Render)
-  apiUrl: 'https://socio-io-iumw.onrender.com',
+  apiUrl: 'https://socio-io-bolt.onrender.com',
   
   // Version
   version: '1.0.0',
