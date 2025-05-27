@@ -116,3 +116,11 @@ exports.verifyPayment = async (req,res) =>{
     }
 
 };
+
+// At the beginning of each function
+if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    return res.status(500).json({
+        success: false,
+        message: "Payment service is not properly configured"
+    });
+}
