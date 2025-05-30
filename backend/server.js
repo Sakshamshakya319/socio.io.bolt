@@ -1,4 +1,4 @@
-  // Main server entry point for the content filtering backend
+// Main server entry point for the content filtering backend
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -17,7 +17,11 @@ const PORT = process.env.PORT || 3000;
 const server = express();
 
 // Apply middleware
-server.use(cors());
+server.use(cors({
+  origin: '*', // This allows requests from any origin, including extensions
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 server.use(helmet());
 server.use(compression());
 server.use(morgan('combined'));

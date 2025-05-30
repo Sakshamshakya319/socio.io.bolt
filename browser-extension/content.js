@@ -195,13 +195,46 @@ function checkTextWithBackend(textNode) {
     return;
   }
   
-  // For demo purposes, we'll simulate a successful API response
-  // In a real implementation, this would be an actual API call
+  // Get the text content
   const text = textNode.nodeValue;
   
-  // Simulate API processing
-  setTimeout(() => {
-    // Apply a more thorough local filter for demo purposes
+  // Make an actual API call to the backend
+  fetch(`${config.apiUrl}/filter/text`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ text })
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    // Check if the API found explicit content
+    if (data.hasExplicitContent) {
+      // Apply filtered text from the API
+      const originalText = textNode.nodeValue;
+      textNode.nodeValue = data.filtered;
+      
+      // Store for recovery
+      const index = filteredElements.text.length;
+      filteredElements.text.push({
+        node: textNode,
+        original: originalText,
+        filtered: data.filtered,
+        index
+      });
+      
+      // Report to background
+      reportFilteredContent('text', originalText, data.filtered);
+    }
+  })
+  .catch(error => {
+    console.error('Error calling text filter API:', error);
+    // Fallback to enhanced local filtering
     const filteredText = applyEnhancedLocalFilter(text);
     
     if (filteredText !== text) {
@@ -221,7 +254,7 @@ function checkTextWithBackend(textNode) {
       // Report to background
       reportFilteredContent('text', originalText, filteredText);
     }
-  }, 100);
+  });
 }
 
 // Enhanced local filter for text (used when API is not available)
