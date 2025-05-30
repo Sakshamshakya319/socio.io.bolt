@@ -1,6 +1,3 @@
-// This file is no longer needed as we've integrated the payment routes into app.js
-// Keeping it for reference
-
 const express = require('express');
 const app = express();
 const cors = require('cors');

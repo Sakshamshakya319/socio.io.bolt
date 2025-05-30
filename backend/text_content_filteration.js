@@ -2,10 +2,22 @@
 const { PredictionServiceClient } = require('@google-cloud/aiplatform');
 const { google } = require('@google-cloud/aiplatform/build/protos/protos');
 
-// List of explicit words to filter (basic example)
+// Import profanity words from JSON file
+const profanityWords = require('./profanity_words.json');
+
+// Create a comprehensive list of explicit words from the profanity_words.json file
 const explicitWords = [
+  // Include original basic words
   'explicit', 'offensive', 'profane', 'vulgar', 'obscene',
-  // Add more words as needed
+  
+  // Add words from profanity_words.json
+  ...profanityWords.sexual_vulgar.hindi,
+  ...profanityWords.sexual_vulgar.english,
+  ...profanityWords.violence_crime.hindi,
+  ...profanityWords.violence_crime.english,
+  ...profanityWords.abusive_insults.hindi,
+  ...profanityWords.abusive_insults.english,
+  ...profanityWords.obfuscated_variants
 ];
 
 /**

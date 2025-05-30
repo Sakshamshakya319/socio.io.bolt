@@ -1,4 +1,4 @@
-// Main server entry point for the content filtering backend
+  // Main server entry point for the content filtering backend
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');

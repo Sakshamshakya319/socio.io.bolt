@@ -1,0 +1,97 @@
+{
+    "sexual_vulgar": {
+        "hindi": [
+            "chutiya",
+            "madarchod",
+            "behenchod",
+            "bhosdi",
+            "bhosdike",
+            "lund",
+            "chudai",
+            "gand",
+            "chinal",
+            "randi",
+            "chut",
+            "tel lagake ghusa",
+            "loda",
+            "chusna"
+        ],
+        "english": [
+            "fuck",
+            "fucking",
+            "slut",
+            "bitch",
+            "pussy",
+            "dick",
+            "blowjob",
+            "handjob",
+            "ass",
+            "tits",
+            "cum",
+            "cumming",
+            "dildo",
+            "whore"
+        ]
+    },
+    "violence_crime": {
+        "hindi": [
+            "balatkaar",
+            "katl",
+            "khoon",
+            "maarna",
+            "jaan se maar",
+            "qatl",
+            "kaat dalunga"
+        ],
+        "english": [
+            "rape",
+            "murder",
+            "kill",
+            "stab",
+            "shoot",
+            "slaughter",
+            "abuse",
+            "torture",
+            "hanging",
+            "behead",
+            "burn alive"
+        ]
+    },
+    "abusive_insults": {
+        "hindi": [
+            "harami",
+            "kutta",
+            "kamina",
+            "nalayak",
+            "ghatiya",
+            "sala",
+            "ullu ka pattha",
+            "suar ke bachhe",
+            "haraamzada",
+            "chirkut",
+            "jhandu"
+        ],
+        "english": [
+            "bastard",
+            "moron",
+            "idiot",
+            "jerk",
+            "scumbag",
+            "douchebag",
+            "asshole",
+            "loser",
+            "retard"
+        ]
+    },
+    "obfuscated_variants": [
+        "f*ck",
+        "f**k",
+        "b!tch",
+        "biatch",
+        "chutiaa",
+        "chutyya",
+        "chutiy@",
+        "rapee",
+        "rap3"
+    ]
+}
