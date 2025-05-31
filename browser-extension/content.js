@@ -263,9 +263,34 @@ function applyEnhancedLocalFilter(text) {
   const explicitWords = [
     'explicit', 'offensive', 'profane', 'vulgar', 'obscene',
     'adult', 'nsfw', 'xxx', 'porn', 'sex',
-    'violence', 'gore', 'blood', 'kill', 'murder',
-    'hate', 'racist', 'bigot', 'slur'
-    // This would be expanded in a real implementation
+    'violence', 'gore', 'blood', 'kill', 'murder','hate', 'racist', 'bigot', 'slur','Chutiya', 
+    'Madarchod', 'Behenchod', 'Gaandu', 'Haramzada', 'Bhosdike', 'Randi', 'Randibaaz', 'Katua', 
+    'Mulla', 'Jihadi', 'Paki', 'Sanghi', 'Bhakt', 'Libtard', 'Sickular', 'Presstitute', 'Chamcha',
+    'Dalit', 'Bhangi', 'Chamar', 'Shudra', 'Brahmin', 'Pajeet', 'Street-shitter', 'Cow-piss drinker', 
+    'Curry-muncher', 'Dot-head', 'Kala', 'Gora', 'Saala', 'Kutta', 'Suar', 'Gadha', 'Ullu', 'Bakchod', 
+    'Fattu', 'Namak Haram', 'Deshdrohi', 'Anti-national', 'Hinduphobe', 'Islamophobe', 'Beef-eater', 'Gau-mutra', 
+    'Babur ki aulad', 'Ghuspetiya', 'Bangladeshi', 'Rohingya', 'Chinki', 'Madrasi', 'Bihari', 'Punjabi', 'Gujju', 
+    'Marathi', 'Tamilian', 'Bengali', 'Sardar', 'Mallu', 'Kanjoos', 'Motu', 'Patla', 'Kaalia', 'Chashmish', 'Ganja', 
+    'Budhau', 'Chakka', 'Hijra', 'Napunsak', 'Lund', 'Chut', 'Tatti', 'Pissu', 'Gobar', 'Besaram', 'Ganda', 'Nanga', 
+    'Pagal', 'Bewakoof', 'Duffer', 'Nikamma', 'Haramkhor', 'Dhokebaaz', 'Jhootha', 'Chor', 'Daku', 'Lutera', 'Kaamchor', 
+    'Nautanki', 'Besharam', 'Badtameez', 'Gustakh', 'Ghamandi', 'Tharki', 'Hawas', 'Randi rona', 'Darpok', 'Bhikari', 'Fakir', 
+    'Sadakchap', 'Gawar', 'Jungli', 'Dehati', 'Anpadh', 'Jahil', 'Nashedi', 'Sharabi', 'Ganjaadi', 'Charsi', 'Smackia', 'Besharam', 
+    'Ghatiya', 'Neech', 'Adharmi', 'Nastik', 'Pakhandi', 'Murkh', 'Chugli', 'Batmeez', 'Dushman', 'Gaddar', 'Saanp', 'Bhediya', 'Lomdi', 
+    'Chuha', 'Bakra', 'Bhains', 'Bandar', 'Chidiya', 'Kida', 'Keeda', 'Makhi', 'Machhar', 'Jallad', 'Rakshas', 'Shaitan', 'Asura', 'Pret', 
+    'Chudail', 'Dayan', 'Bhoot', 'Pishach', 'Kafir', 'Munafiq', 'Dhimmi', 'Firangi', 'Angrez', 'Vilayati', 'Cheeni', 'Habshi', 'Kalu', 
+    'Chhota', 'Lambu', 'Tharki buddha', 'Budhiya', 'Aunty', 'Uncle', 'Beedi', 'Tapori', 'Goonda', 'Mawali', 'Gundagardi', 
+    'Chhapri', 'Lukkha', 'Aawara', 'Bhaigiri', 'Dadagiri', 'Dhaonsu', 'Fenku', 'Pappu', 'Tadipaar', 'Naxali', 'Urban Naxal', 
+    'Tukde gang', 'Aaptard', 'Congi', 'Modia', 'Godi media', 'Dalal', 'Bikaau', 'Ghulam', 'Naukar', 'Malikin', 'Raja', 'Rani', 
+    'Shehzada', 'Nawab', 'Sultan', 'Begum', 'Mirza', 'Jhandu', 'Dhinchak', 'Chomu', 'Dhakkan', 'Fuddu', 'Bhasad', 'Jhol', 'Bakwas', 
+    'Faltu', 'Ghanta', 'Bc', 'Term', 'Kabadi', 'Langoti', 'Chaddi', 'Topiwala', 'Bhukhmari', 'Chappalchor', 'Dhoban', 'Bhutta', 
+    'Patthar', 'Gulllu', 'Kachcha', 'Pakka', 'Bhusa', 'Dhool', 'Mitti', 'Pataka baaz', 'Rassi', 'Koyla', 'Loonda', 'Chhokra', 'Jhantu', 
+    'Bhond', 'Khotta', 'Bhains ki aankh', 'Kambakht', 'Badzaat', 'Badnaseeb', 'Kismat ka mara', 'Bhagwan ka bandar', 'Shani', 'Rahu', 'Ketu', 'Kalank', 
+    'Badnaam', 'Nakara', 'Bekaar', 'Kaath ka ullu', 'Bhains ka patha', 'Suar ka bachcha', 'Kutte ka pilla', 'Billi ka baccha', 'Gadhe ka beta', 'Bakri ka mendak', 
+    'Bhed ka doodh', 'Chooza', 'Murgi', 'Kabootar baaz', 'Tota baaz', 'Kauwe ki tatti', 'Machhar ka larwa', 'Kide ka anda', 'Keede ka bacha', 'Makhi ka makkha', 'Chuhe ki dum', 
+    'Saanp ka zehar', 'Bhediye ka gala', 'Lomdi ki chaal', 'Bandar ka naach', 'Bhains ki laat', 'Gadhe ki chaap', 'Kutte ki puchh', 'Suar ki peti', 'Bakre ki tang', 'Chidiya ka ghosla', 
+    'Kide ki rassi', 'Keede ka jhol', 'Makhi ka jhaad', 'Machhar ka raja', 'Jallad ka beta', 'Rakshas ki aulaad', 'Shaitan ka chela', 'Asura ka bhai', 'Pret ka saaya', 'Chudail ki beti', 'Dayan ka pota', 
+    'Bhoot ka baap', 'Pishach ka dost', 'Kafir ka yaar', 'Munafiq ka bhai', 'Dhimmi ka beta', 'Firangi ka naukar', 'Angrez ka toota', 'Vilayati ka kutta', 'Cheeni ka gadha', 'Habshi ka bandar', 'Kalu ka kalua', 'Chhota ka lambu', 'Lambu ka chhota', 'Tharki buddha ka beta', 'Budhiya ki beti', 'Aunty ka baccha', 'Uncle ka pota', 'Beedi ka dhuaan', 'Tapori ka baap', 'Goonda ka bhai', 'Mawali ka dost', 'Gundagardi ka raja', 'Chhapri ka beta', 'Lukkha ka yaar', 'Aawara ka baap', 'Bhaigiri ka guru', 'Dadagiri ka ustaad', 'Dhaonsu ka chela', 'Fenku ka bhai', 'Pappu ka dost', 'Tadipaar ka yaar', 'Naxali ka beta', 'Urban Naxal ka bhai', 'Tukde gang ka raja', 'Aaptard ka guru', 'Congi ka chela', 'Modia ka baap', 'Godi media ka beta', 'Dalal ka pota', 'Bikaau ka bhai', 'Ghulam ka dost', 'Naukar ka beta', 'Malikin ka chela', 'Raja ka naukar', 'Rani ka chamcha', 'Shehzada ka yaar', 'Nawab ka kutta', 'Sultan ka ghulam', 'Begum ki naukrani', 'Mirza ka bandar', 'Jhandu ka bhai', 'Dhinchak ka dost', 'Chomu ka beta', 'Dhakkan ka baap', 'Fuddu ka yaar', 'Bhasad ka raja', 'Jhol ka guru', 'Bakwas ka ustaad', 'Faltu ka chela', 'Ghanta ka bhai', 'Bc ka dost', 'Kachre ka dabba', 'Dhool ka thaila', 'Mitti ka bartan', 'Patthar ka dil', 'Bhusa ka gadda', 'Koyla ka dhuaan', 'Loonda baaz', 'Chhokra ka raja', 'Jhantu ka bhai', 'Bhond ka beta', 'Khotta ka dost', 'Bhains ki aankh', 'Kambakht', 'Badzaat', 'Badnaseeb', 'Kismat ka mara'
+
   ];
   
   let filteredText = text;
